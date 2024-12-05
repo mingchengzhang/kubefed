@@ -18,6 +18,7 @@ package util
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/pkg/errors"
@@ -44,7 +45,7 @@ func NewGenericInformerWithEventHandler(config *rest.Config, namespace string, o
 		return nil, nil, err
 	}
 
-	mapper, err := apiutil.NewDiscoveryRESTMapper(config)
+	mapper, err := apiutil.NewDynamicRESTMapper(config, &http.Client{})
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "Could not create RESTMapper from config")
 	}
@@ -54,7 +55,7 @@ func NewGenericInformerWithEventHandler(config *rest.Config, namespace string, o
 		return nil, nil, err
 	}
 
-	client, err := apiutil.RESTClientForGVK(gvk, false, config, scheme.Codecs)
+	client, err := apiutil.RESTClientForGVK(gvk, false, config, scheme.Codecs, &http.Client{})
 	if err != nil {
 		return nil, nil, err
 	}
